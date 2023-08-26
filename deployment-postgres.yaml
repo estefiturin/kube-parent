@@ -14,14 +14,20 @@ spec:
     spec:
       containers:
         - name: postgres14
-          image: postgres:14-alpine
+          image: postgres:alpine
           ports:
             - containerPort: 5432
           env:
             - name: POSTGRES_PASSWORD
-              value: sasa
+              valueFrom:
+                configMapKeyRef:
+                  name: msvc-cursos
+                  key: password
             - name: POSTGRES_DB
-              value: msvc_cursos
+              valueFrom:
+                configMapKeyRef:
+                  name: msvc-cursos
+                  key: database
           volumeMounts:
             - name: data-postgres
               mountPath: /var/lib/postgresql/data

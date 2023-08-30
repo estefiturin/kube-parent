@@ -3,6 +3,7 @@ package org.estefiturin.springcloud.msvc.usuarios.controllers;
 import org.estefiturin.springcloud.msvc.usuarios.models.entity.Usuario;
 import org.estefiturin.springcloud.msvc.usuarios.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,9 +18,17 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
 
+    @Autowired
+    private Environment env;
+
     @GetMapping
-    public Map<String, List<Usuario>> listar() {
-        return Collections.singletonMap("usuarios",service.listar());
+    public ResponseEntity<?> listar() {
+        Map<String, Object> body = new HashMap<>();
+        body.put("usuarios",service.listar());
+        body.put("pod_info", env.getProperty("MY_POD_NAME") + ": " + env.getProperty("MY_POD_ID"));
+        body.put("texto", env.getProperty("config.texto"));
+        return ResponseEntity.ok(body);
+//        return Collections.singletonMap("usuarios",service.listar());
     }
 
     @GetMapping("/{id}")
